@@ -105,7 +105,7 @@ invent.ui.App(
                     columns=4,
                     content=[
                         invent.ui.TextInput(
-                            column_span=4,
+                            layout=dict(column_span=4),
                             value=invent.ui.from_datastore("numbers"),
                         ),
                         invent.ui.Button(

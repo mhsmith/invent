@@ -67,8 +67,8 @@ app = App(
                 Slider(
                     value=from_datastore("number_of_honks"),
                     name="Honk Slider",
-                    position="FILL",
                     step=1,
+                    layout=dict(position="FILL"),
                 ),
                 Column(
                     content=[

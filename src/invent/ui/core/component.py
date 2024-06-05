@@ -127,22 +127,6 @@ class Component:
     enabled = BooleanProperty("Indicates if the component is enabled.")
     visible = BooleanProperty("The component is visible is set to True.")
 
-    # Properties that are used by the container that a component is in.
-    position = TextProperty(
-        "The component's position inside it's parent.",
-        default_value="FILL",
-    )
-
-    column_span = TextProperty(
-        "The component's requested column-span in a grid",
-        default_value="1",
-    )
-
-    row_span = TextProperty(
-        "The component's requested row-span in a grid.",
-        default_value="1",
-    )
-
     def __init__(self, **kwargs):
         if invent.is_micropython:  # pragma: no cover
             # When in MicroPython, ensure all the properties have a reference
@@ -159,6 +143,10 @@ class Component:
         Component._components_by_id[self.id] = self
         # To reference the container's parent in the DOM tree.
         self.parent = None
+
+    @property
+    def layout(self):
+
 
     @property
     def is_container(self):
@@ -500,6 +488,19 @@ class Container(Component):
       insert the children into the container in the correct manner.
     """
 
+    class Layout:
+        # Properties that are used by the container that a component is in.
+        position = TextProperty(
+            "The component's position inside it's parent.",
+            default_value="FILL",
+        )
+
+        def on_position_changed(self, position):
+            # FIXME move Component.set_position in here, updating:
+            #     self -> self.child
+            #     container -> self.parent
+
+
     content = ListProperty(
         "The contents of the container",
         default_value=None,
@@ -629,6 +630,8 @@ class Container(Component):
         # Update the grid indices of the container's children.
         self.update_children()
 
+        item.layout = self.Layout(self, item, **item.layout)
+
     def insert(self, index, item):
         """
         Insert like a list.
@@ -741,3 +744,10 @@ class Container(Component):
             child.as_dict() for child in self.content
         ]
         return result
+
+
+class BaseLayout:
+    def __init__(self, parent, child, **kwargs):
+        # FIXME
+
+
